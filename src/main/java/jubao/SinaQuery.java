@@ -3,6 +3,9 @@ package jubao;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.http.HttpHost;
@@ -19,11 +22,17 @@ import zzm.Test;
 public class SinaQuery {
 	
     static List<String> dict = new ArrayList<String>();
-	 
+    
+    
+    static ExecutorService executorService= Executors.newFixedThreadPool(Integer.parseInt(System.getProperty("threadSize", "4")));
+    
+     
 	public static void main(String[] args)throws Exception {
 		args = new String[]{"1","2"};
 		dict = Arrays.asList(args);
 	    executeAll();
+	
+	    
 	}
 	
 	
@@ -36,18 +45,25 @@ public class SinaQuery {
 		}
 		
 		for(;;){
-			for(int i = 0;i<dict.size();i++){
-			    try{
-					String s = dict.get(i);
-					String url = "http://s.weibo.com/weibo/"+s+"&Refer=STopic_box" ;
-					Test.printLog("≤È—Ø url:"+url);
-					HttpHost httpHost = IpPoolUtil.getHttpHost();
-					executeHttpUnit(url,httpHost);
-					executeHttpUnit(url,httpHost);
-					Thread.sleep(1000);
-			    }catch(Exception e){
-                      e.printStackTrace();			    	
-			    }
+			for( int i = 0;i<dict.size();i++){
+				final int j = i;
+				executorService.submit(new Callable<String>() {
+		    		public String call() throws Exception {
+		    			 try{
+		 			    	String s = dict.get(j);
+		 					String url = "http://s.weibo.com/weibo/"+s+"&Refer=STopic_box" ;
+		 					Test.printLog("≤È—Ø url:"+url);
+		 					HttpHost httpHost = IpPoolUtil.getHttpHost();
+		 					executeHttpUnit(url,httpHost);
+		 					executeHttpUnit(url,httpHost);
+		 					
+		 			    }catch(Exception e){
+		                       e.printStackTrace();			    	
+		 			    }
+		    			return null;
+		    		}
+				});
+				Thread.sleep(1000);
 			}
 		}
 		
