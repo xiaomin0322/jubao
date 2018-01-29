@@ -19,7 +19,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>a.TG</mainClass>
+                  <mainClass>jubao.SinaQuery</mainClass>
                 </transformer>
               </transformers>
               <artifactSet />

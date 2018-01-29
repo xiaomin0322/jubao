@@ -28,9 +28,11 @@ public class SinaQuery {
     
      
 	public static void main(String[] args)throws Exception {
-		args = new String[]{"1","2"};
-		dict = Arrays.asList(args);
-	    executeAll();
+		//args = new String[]{"1","2"};
+		//dict = Arrays.asList(args);
+		dict = Arrays.asList(args[0].split(","));
+	     Test.printLog("query dist "+dict);
+		executeAll();
 	
 	    
 	}
